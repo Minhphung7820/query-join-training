@@ -520,10 +520,16 @@ class DashboardRepository
                 COALESCE(count_register, 0) +
                 (COALESCE(count_rating, 0) * COALESCE(avg_star, 0)) +
                 COALESCE(c.views, 0) +
-                (CASE WHEN COALESCE(count_register, 0) = 0 THEN 0 ELSE (COALESCE(count_completed, 0) / NULLIF(count_register, 0)) * 100 END) -
+                (
+                    CASE
+                        WHEN COALESCE(count_register, 0) = 0 THEN 0
+                        ELSE (COALESCE(count_completed, 0) / NULLIF(count_register, 0)) * 100
+                    END
+                ) -
                 COALESCE(time_active, 0)
             ) as popularity
-            ")
+        ")
+
         ]);
 
         $data = $query
