@@ -136,12 +136,12 @@ class DashboardRepository
         //
         $typeChart = $request['type_chart'] ?? 'date';
         if ($typeChart) {
+            $time = $this->getParamsTimeFormatGrowth($typeChart, $from, $to);
+            //
+            $startDate = $time['from'];
+            $endDate = $time['to'];
+            //
             if ($typeChart == 'date') {
-                $time = $this->getParamsTimeFormatGrowth($typeChart, $from, $to);
-                //
-                $startDate = $time['from'];
-                $endDate = $time['to'];
-                //
                 $course_invoices
                     ->whereDate('created_at', '>=', $startDate)
                     ->whereDate('created_at', '<=', $endDate)
@@ -159,11 +159,6 @@ class DashboardRepository
                     )->groupBy(DB::raw("DATE_FORMAT(order_date, '%d/%m/%Y')"));
             }
             if ($typeChart == 'month') {
-                $time = $this->getParamsTimeFormatGrowth($typeChart, $from, $to);
-                //
-                $startDate = $time['from'];
-                $endDate = $time['to'];
-                //
                 $course_invoices
                     ->whereDate('created_at', '>=', $startDate)
                     ->whereDate('created_at', '<=', $endDate)
@@ -181,11 +176,6 @@ class DashboardRepository
                     )->groupBy('month_year');
             }
             if ($typeChart == 'quarter') {
-                $time = $this->getParamsTimeFormatGrowth($typeChart, $from, $to);
-                //
-                $startDate = $time['from'];
-                $endDate = $time['to'];
-                //
                 $course_invoices
                     ->whereDate('created_at', '>=', $startDate)
                     ->whereDate('created_at', '<=', $endDate)
@@ -211,11 +201,6 @@ class DashboardRepository
                     );
             }
             if ($typeChart == 'year') {
-                $time = $this->getParamsTimeFormatGrowth($typeChart, $from, $to);
-                //
-                $startDate = $time['from'];
-                $endDate = $time['to'];
-                //
                 $course_invoices
                     ->whereYear('created_at', '>=', $startDate->format('Y'))
                     ->whereYear('created_at', '<=', $endDate->format('Y'))
