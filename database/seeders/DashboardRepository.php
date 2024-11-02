@@ -36,14 +36,19 @@ class DashboardRepository
         $totalCountRefund = $refunds->count();
         $totalAmountRefund = $refunds->sum('total');
 
-        $withdrawals = DB::table('request_withdrawal')
+        $totalAmountWithdrawalCommission = DB::table('request_withdrawal')
             ->where('type', 'withdrawal')
             ->where('type_withdrawal', 'withdrawal_commission')
             ->where('status', 'approve')
-            ->whereBetween('created_at', $dateRange);
+            ->whereBetween('created_at', $dateRange)
+            ->select([
+                DB::raw("SUM(CASE WHEN classification = 'online' THEN money ELSE 0 END) as total_online"),
+                DB::raw("SUM(CASE WHEN classification = 'offline' THEN money ELSE 0 END) as total_offline")
+            ])
+            ->first();
 
-        $totalAmountWithdrawalCommissionOnline = $withdrawals->where('classification', 'online')->sum('money');
-        $totalAmountWithdrawalCommissionOffline = $withdrawals->where('classification', 'offline')->sum('money');
+        $totalAmountWithdrawalCommissionOnline = $totalAmountWithdrawalCommission->total_online ?? 0;
+        $totalAmountWithdrawalCommissionOffline = $totalAmountWithdrawalCommission->total_offline ?? 0;
 
         return [
             "sales" => [
