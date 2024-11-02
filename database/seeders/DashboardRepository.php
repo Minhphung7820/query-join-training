@@ -133,7 +133,6 @@ class DashboardRepository
                 return $query->where('user_id', $request['user_id']);
             });
         //
-        //
         $typeChart = $request['type_chart'] ?? 'date';
         if ($typeChart) {
             $time = $this->getParamsTimeFormatGrowth($typeChart, $from, $to);
